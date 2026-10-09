@@ -42,29 +42,29 @@ their own; or run `npm run api` in a separate terminal.
 ### Part A — functional tests (expected to pass)
 
 ```bash
-npx playwright test --grep-invert @KnownBug   # functional suite only
-npm run test:smoke                            # @Healthcheck smoke subset
+npm test              # functional suite (excludes @KnownBug)
+npm run test:smoke    # @Healthcheck smoke subset
 ```
 
 Coverage highlights:
 - A thin API wrapper (`Reminders_API.ts`) and Zod schemas validate response
   **shape and types**, not just status codes.
 - A test-data factory (`reminder.factory.ts`) builds valid/invalid payloads.
-- Positive, negative, and edge cases across the three endpoints; smoke tests
-  are tagged `@Healthcheck`.
+- Positive, negative, and edge cases across the list/get/create endpoints;
+  smoke tests are tagged `@Healthcheck`.
+- A positive `POST /reminders/{id}/complete` test confirms the status
+  transitions to `Done` and persists on a follow-up fetch.
 
 ### Part B — known-bug regression tests (expected to fail)
 
 ```bash
-npx playwright test --grep @KnownBug
+npm run test:known-bugs
 ```
 
 These four tests encode the behavior `API_REFERENCE.md` requires. They **fail
 today** against the current (buggy) API and will **pass once each bug is
-fixed** — see [Bugs found](#bugs-found-part-b). Note: the default `npm test`
-has no tag filter, so it runs everything and will report the four intentional
-failures; use the `--grep` / `--grep-invert` commands above to separate the
-groups.
+fixed** — see [Bugs found](#bugs-found-part-b). They are excluded from the
+default `npm test` (which stays green); run them only via the command above.
 
 ### Part C — load test
 
@@ -89,6 +89,7 @@ tests/
     Reminders_List.spec.ts            GET /reminders coverage
     Reminders_Get.spec.ts             GET /reminders/{id} coverage
     Reminders_Create.spec.ts          POST /reminders coverage
+    Reminders_Complete.spec.ts        POST /reminders/{id}/complete coverage
     Reminders_KnownBugs.spec.ts       Part B regression tests (@KnownBug)
 load/
   scenarios/reminders-smoke.ts        k6 user-journey scenario
@@ -183,9 +184,3 @@ smoke-test budgets, **not** official production SLAs.
 - **Shared API state:** the API keeps one in-memory store with no per-test
   reset. Tests are written to tolerate this (assert on their own created
   records or on stable seeded data), but a reset hook would be cleaner.
-- **Pre-existing TypeScript errors (not introduced by these tests, left
-  unfixed):** a strict `tsc --noEmit` reports two issues in skeleton files —
-  an unused `@ts-expect-error` in `load/shared/http.ts`, and a `URLSearchParams`
-  typing issue in `tests/api/reminders/Reminders_API.ts`. They don't affect the
-  test run (Playwright and esbuild transpile the TypeScript), so they're
-  documented rather than changed.

@@ -20,7 +20,7 @@ export class RemindersApi {
 
   list(query: Record<string, string | number> = {}) {
     const params = new URLSearchParams(
-      Object.entries(query).map(([k, v]) => [k, String(v)]),
+      Object.entries(query).map(([k, v]) => [k, String(v)] as [string, string]),
     ).toString();
     const suffix = params ? `?${params}` : '';
     return this.request.get(`/reminders${suffix}`);

@@ -5,7 +5,8 @@
   "private": true,
   "scripts": {
     "api": "node api/server.js",
-    "test": "playwright test",
+    "test": "playwright test --grep-invert @KnownBug",
+    "test:known-bugs": "playwright test --grep @KnownBug",
     "test:smoke": "playwright test --grep @Healthcheck",
     "k6:build": "node load/esbuild.config.mjs",
     "k6:smoke": "k6 run load/dist/reminders-smoke.js"
