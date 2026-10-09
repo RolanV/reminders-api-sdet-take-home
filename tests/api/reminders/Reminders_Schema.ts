@@ -25,3 +25,13 @@ export const ReminderListSchema = z.object({
   pageSize: z.number(),
   total: z.number(),
 });
+
+/** Shape of the 404 body returned by GET /reminders/{id} for an unknown id. */
+export const NotFoundErrorSchema = z.object({
+  error: z.string(),
+});
+
+/** Shape of the 400 body returned by POST /reminders validation failures. */
+export const ValidationErrorSchema = z.object({
+  errors: z.array(z.string()).min(1),
+});

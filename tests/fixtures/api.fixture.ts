@@ -3,9 +3,9 @@ import { test as base, expect as baseExpect, APIResponse } from '@playwright/tes
 /**
  * Custom matcher: toHaveApiStatus.
  *
- * On failure it prints the endpoint, the expected and actual status, and a
- * short excerpt of the response body, so a failing test tells you what went
- * wrong without extra digging.
+ * On failure it prints the endpoint and the expected vs. actual status. It
+ * deliberately does NOT print the response body: reminder bodies can contain
+ * the sensitive `notes` field, which must not leak into test reports.
  *
  * Usage:  await expect(response).toHaveApiStatus(200);
  */
@@ -16,14 +16,12 @@ export const expect = baseExpect.extend({
       return { pass: true, message: () => '' };
     }
     const endpoint = new URL(response.url()).pathname;
-    const body = (await response.text()).trim().slice(0, 400) || '<empty response>';
     return {
       pass: false,
       message: () =>
         `API ${endpoint}\n` +
         `  Expected status: ${expectedStatus}\n` +
-        `  Received status: ${actualStatus}\n` +
-        `  Response body: ${body}`,
+        `  Received status: ${actualStatus}`,
     };
   },
 });
