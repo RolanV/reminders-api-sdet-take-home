@@ -13,9 +13,9 @@ import { buildValidReminder } from '@fixtures/reminder.factory';
  *   npx playwright test --grep-invert @KnownBug   # regular functional suite (expected green)
  *   npx playwright test --grep @KnownBug          # this suite (expected red today)
  *
- * NOTE: the default `npm test` has no grep filter, so it runs these too and
- * will report four intentional failures. Use the commands above to separate
- * the functional suite from the known-bug suite.
+ * NOTE: `npm test` excludes `@KnownBug` tests using `--grep-invert`.
+ * Run them separately with `npm run test:known-bugs`; they currently fail by
+ * design until the underlying API defects are fixed.
  *
  * Tests avoid logging or asserting on the sensitive `notes` field, and the
  * custom status matcher does not print response bodies.

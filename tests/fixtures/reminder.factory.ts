@@ -3,9 +3,10 @@ import type { ReminderInput } from '../api/reminders/Reminders_API';
 let sequence = 0;
 
 /**
- * Builds a valid reminder payload. Each call bumps a counter so
- * patientName/title/dueDate are unique across tests, which matters because
- * the API has no reset endpoint between tests — see README for details.
+ * Builds a valid reminder payload. Each call increments a module-local counter,
+ * so generated values differ within a worker process. Playwright workers use
+ * separate processes, so the counter resets per worker and generated values
+ * may repeat across workers. Tests must not rely on global uniqueness.
  *
  * `notes` is a placeholder value only. Per API_REFERENCE.md it's treated as
  * sensitive, so no test asserts on its content or logs it.
