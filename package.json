@@ -1,7 +1,7 @@
 {
-  "name": "sdet-take-home",
+  "name": "reminders-api-sdet-take-home",
   "version": "1.0.0",
-  "description": "TrendConnect test automation take-home: Reminders API",
+  "description": "SDET take-home assessment: Playwright API tests, known-bug regression suite, and k6 load scenario for a provided Reminders API.",
   "private": true,
   "scripts": {
     "api": "node api/server.js",
